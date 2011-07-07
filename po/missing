@@ -1,0 +1,5 @@
+modules/keyring/keyring.c
+old/chatlog.c
+old/uilogin.c
+old/uilogin.glade
+src/manager.c

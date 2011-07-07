@@ -1,0 +1,13 @@
+= GKiu README =
+Mike Ma <zhtx10@gmail.com>
+
+== Beginning to Use ==
+This package contains GKiu Core, but doesn't have any other useful package. If you'd like something useful please wait some weeks, we'll do them soon.
+
+== Any Bugs? Or any Suggestions? ==
+Any bugs?
+Any suggestions？
+Please report into http:github.com/gqqdev/gkiu/issues[issues list].
+We, the developers need them very much!
+
+And, My English is very poor, please report where the wrong is.
