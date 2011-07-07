@@ -15,13 +15,14 @@ bin_PROGRAMS = gkiu
 
 gkiu_SOURCES = \
 	main.c     \
-	app.c      \
-	app.h      \
+	main.h      \
 	manager.c  \
 	manager.h  \
 	config.c   \
 	config.h   
+
 gkiu_LDADD = $(GKIU_LIBS)
 
 uninstall-local:
 	-rm -r $(datadir)/gkiu
+

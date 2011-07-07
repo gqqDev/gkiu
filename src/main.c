@@ -35,7 +35,7 @@
 #include <gtk/gtk.h>
 #include <libpeas/peas.h>
 
-#include "app.h"
+#include "main.h"
 #include "manager.h"
 
 gboolean development;

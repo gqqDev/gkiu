@@ -2269,9 +2269,6 @@ esac
 AM_BACKSLASH='\'
 
 
-datadir=${datarootdir}/gkiu
-libdir=${libdir}/gkiu
-
 am__api_version='1.11'
 
 ac_aux_dir=

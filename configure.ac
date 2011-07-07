@@ -4,9 +4,6 @@ dnl Created by Anjuta application wizard.
 AC_INIT(gkiu,[2.9.9])
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
 
-datadir=${datarootdir}/gkiu
-libdir=${libdir}/gkiu
-
 AM_INIT_AUTOMAKE(AC_PACKAGE_NAME, AC_PACKAGE_VERSION)
 AC_CONFIG_HEADERS([config.h])
 AM_MAINTAINER_MODE

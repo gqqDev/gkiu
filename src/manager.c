@@ -22,6 +22,7 @@
 #include <libpeas/peas.h>
 #include <libpeas-gtk/peas-gtk.h>
 
+#include "main.h"
 #include "manager.h"
 
 static PeasEngine *engine = NULL;
@@ -67,6 +68,7 @@ manager_init (gboolean on_dev)
         peas_engine_add_search_path (engine, 
                                      PACKAGE_LIB_DIR  "/modules",
                                      PACKAGE_DATA_DIR "/modules");
+        printf ("%s\n%s\n",PACKAGE_LIB_DIR"/modules", PACKAGE_DATA_DIR"/modules");
     }
     peas_engine_enable_loader (engine, "gjs");
     peas_engine_enable_loader (engine, "seed");
@@ -96,6 +98,18 @@ manager_show_manager_window ()
     gtk_container_set_border_width (GTK_CONTAINER (window), 6);
     gtk_window_set_title (GTK_WINDOW (window), _("GKiu Manager"));
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
+
+#ifdef WHERE_ICON
+    GError *err = NULL; /* Must be NULL! */
+    GdkPixbuf *image = gdk_pixbuf_new_from_file (WHERE_ICON, &err);
+    if (!image)
+    {
+        fprintf (stderr, "%s\n", err->message);
+        g_error_free (err);
+    }
+    else
+        gtk_window_set_default_icon (image);
+#endif
 
 #if GTK_CHECK_VERSION(2,91,1)
     gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
