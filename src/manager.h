@@ -18,6 +18,9 @@
 
 #ifndef __MANAGER_H__
 #define __MANAGER_H__
+
+#include <gtk/gtk.h>
+
 /* Macros */
 #define DEV_MODULES_DIR "../modules"
 
@@ -25,5 +28,6 @@
 PeasEngine*   get_engine();
 void          manager_init(gboolean);
 GtkWidget *   manager_show_manager_window ();
+void          manager_refresh_modules_list ();
 
 #endif /* __MANAGER_H__ */

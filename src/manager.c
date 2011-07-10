@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+#include <stdarg.h>
 #include <stdlib.h>
 #include <glib.h>
 #include <glib/gi18n.h>
@@ -22,6 +23,7 @@
 #include <libpeas/peas.h>
 #include <libpeas-gtk/peas-gtk.h>
 
+#include "plugin-object.h"
 #include "main.h"
 #include "manager.h"
 
@@ -91,6 +93,7 @@ manager_show_manager_window ()
     GtkWidget *window     = NULL;
     GtkWidget *box        = NULL;
     GtkWidget *manager    = NULL;
+    GtkWidget *rbutton    = NULL; /* refresh module list */
 
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     g_signal_connect (window, "delete-event", 
@@ -121,6 +124,11 @@ manager_show_manager_window ()
     manager = peas_gtk_plugin_manager_new (get_engine ());
     gtk_box_pack_start (GTK_BOX (box), manager, TRUE, TRUE, 0);
 
+    rbutton = gtk_button_new_with_label (_("Refresh"));
+    g_signal_connect (rbutton, "clicked", 
+                      G_CALLBACK (manager_refresh_modules_list), NULL);
+    gtk_box_pack_start (GTK_BOX (box), rbutton, TRUE, TRUE, 0);
+
     gtk_window_resize (GTK_WINDOW(window), 600, 500);
 
     return window;
@@ -133,11 +141,12 @@ manager_show_manager_window ()
  * Just start the auto-start modules.
  *
  * Return Value: 0 on success. The others are on error.
+ *
+ * Flags: TODO
  */
 int
 manager_auto_start (PeasEngine *engine)
 {
-    
     return 0;
 }
 
@@ -151,8 +160,47 @@ manager_auto_start (PeasEngine *engine)
  * Return Value: 0 on success. The others are on error.
  * Since: 2.9.9
  */
-int
+void
 manager_refresh_modules_list ()
 {
-    return 0;
+    peas_engine_rescan_plugins (get_engine ());
+}
+
+/**
+ * manager_call_function:
+ * @pname: The plugin name.
+ * @mname: The function name.
+ *
+ * Call a function in a plugin.
+ *
+ * Return Value: TRUE on successful call.
+ * Since: 2.9.9
+ */
+gboolean
+manager_call_function (const char *pname,
+                       const char *mname,
+                       ...)
+{
+    /* new a PeasExtensionSet */
+    PeasExtensionSet *set = peas_extension_set_new (get_engine (),
+                                                    GKIU_PLUGIN_TYPE,
+                                                    NULL);
+    /* get plugin info */
+    PeasPluginInfo *pinfo = peas_engine_get_plugin_info (get_engine (),
+                                                         pname);
+
+    /* get extension object. */
+    PeasExtension *ext = peas_extension_set_get_extension (set, pinfo);
+    if (!ext)
+    {
+        return FALSE;
+    }
+
+    /* call it. */
+    va_list pvar;
+    va_start (pvar, mname);
+    gboolean r = peas_extension_call_valist (ext, mname, pvar);
+    va_end (pvar);
+
+    return r;
 }
