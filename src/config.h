@@ -18,6 +18,29 @@
 #ifndef __CONFIG_H__
 #define __CONFIG_H__
 
-void cfg_init(void);
+#include <limits.h>
 
-#endif /* CONFIG_H__ */
+char    CFG_DIR[PATH_MAX];
+char    CFG_KEY_FILE[PATH_MAX];
+
+enum CFG_CHECK_MODE
+{
+    CFG_OK,                /* group and key can both be found */
+    CFG_GROUP_NOT_FOUND,   /* can't find group (so you can't find key) */
+    CFG_KEY_NOT_FOUND      /* can't find key, but group can be found */
+};
+
+void    cfg_init     (void);
+
+enum CFG_CHECK_MODE cfg_check    (const char *group, const char *key);
+
+gchar  **cfg_get_strv (const char *group, const char *key, gsize *lenght);
+gboolean cfg_get_int  (const char *group, const char *key, int *pint);
+
+void     cfg_set_strv (const char *group, const char *key, const char **strv, gsize lenght);
+void     cfg_set_int  (const char *group, const char *key, int i);
+
+void     cfg_save     (void);
+void     cfg_free     (void);
+
+#endif /* __CONFIG_H__ */

@@ -35,6 +35,7 @@
 #include <gtk/gtk.h>
 #include <libpeas/peas.h>
 
+#include "config.h"
 #include "main.h"
 #include "manager.h"
 
@@ -57,12 +58,9 @@ static GOptionEntry args [] = {
  *
  * This function is the main() function.
  * It does:
- * 1, It parses arguments.
- *    (Including showing helps or usage.)
- * 2, Load i18n support.
- * 3, Load GObject Introspection support.
- * 4, Print application name and version to terminal.
- * 5, Call core manager.
+ * 1, Init (parse args, i18n, config, gobject)
+ * 3, Print application name and version to terminal.
+ * 4, Call core manager.
  *
  * Return Value: The exitcode.
  * Since: 0.0
@@ -73,6 +71,9 @@ main (int argc,
 {
     GOptionContext *option_context;
     GError *error = NULL;
+
+    /* init cfg */
+    cfg_init ();
 
     /* init i18n */
     bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
@@ -104,6 +105,7 @@ main (int argc,
     /* Call core manager */
     g_debug (_("Staring Core Manager."));
     manager_init (development);
+    manager_load_modules_in_list ();
 
     if (showmanager)
     {
@@ -113,5 +115,7 @@ main (int argc,
     }
 
     /* Bye, GKiu. We'll miss you. :-) */
+    cfg_save ();
+    cfg_free ();
     exit (EXIT_SUCCESS);
 }

@@ -72,10 +72,12 @@ src/Makefile
 m4/Makefile
 po/Makefile.in
 data/Makefile
+data/pictures/Makefile
 modules/Makefile
 modules/keyring/Makefile
 modules/iMode/Makefile
 modules/imui/Makefile
+modules/messenger/Makefile
 ])
 
 AC_OUTPUT

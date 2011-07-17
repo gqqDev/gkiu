@@ -1,3 +1,4 @@
+	plugin-object.h	
 ## Process this file with automake to produce Makefile.in
 
 AM_CFLAGS =\

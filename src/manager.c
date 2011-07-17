@@ -15,6 +15,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 #include <stdarg.h>
 #include <stdlib.h>
 #include <glib.h>
@@ -23,6 +24,7 @@
 #include <libpeas/peas.h>
 #include <libpeas-gtk/peas-gtk.h>
 
+#include "config.h"
 #include "plugin-object.h"
 #include "main.h"
 #include "manager.h"
@@ -70,7 +72,6 @@ manager_init (gboolean on_dev)
         peas_engine_add_search_path (engine, 
                                      PACKAGE_LIB_DIR  "/modules",
                                      PACKAGE_DATA_DIR "/modules");
-        printf ("%s\n%s\n",PACKAGE_LIB_DIR"/modules", PACKAGE_DATA_DIR"/modules");
     }
     peas_engine_enable_loader (engine, "gjs");
     peas_engine_enable_loader (engine, "seed");
@@ -87,6 +88,16 @@ manager_init (gboolean on_dev)
  * Return Value: the pointer to Window. (GtkWidget *)
  * Since: 2.9.9
  */
+static gboolean
+manager_window_close_cb (GtkWidget *widget,
+                         GdkEvent *event,
+                         gpointer ptr)
+{
+    manager_save_modules_list ();
+    gtk_main_quit ();
+    return FALSE;
+}
+
 GtkWidget *
 manager_show_manager_window ()
 {
@@ -97,7 +108,7 @@ manager_show_manager_window ()
 
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     g_signal_connect (window, "delete-event", 
-                      G_CALLBACK (gtk_main_quit), NULL);
+                      G_CALLBACK (manager_window_close_cb), NULL);
     gtk_container_set_border_width (GTK_CONTAINER (window), 6);
     gtk_window_set_title (GTK_WINDOW (window), _("GKiu Manager"));
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
@@ -135,19 +146,68 @@ manager_show_manager_window ()
 }
 
 /**
+ * manager_save_modules_list:
+ *
+ * Save the loaded modules into the config file.
+ *
+ * Since: 2.9.9
+ */
+void
+manager_save_modules_list ()
+{
+    const GList *list = NULL;
+    int          n    = 0;
+
+    /* get number */
+    list = peas_engine_get_plugin_list (get_engine ());
+    while (g_list_next (list))
+    {
+        if (peas_plugin_info_is_loaded ((PeasPluginInfo *)list->data))
+            n ++;
+        list = g_list_next (list);
+    }
+
+    /* get list */
+    gchar **strv;
+    strv = peas_engine_get_loaded_plugins (get_engine ());
+
+    /* save */
+    cfg_set_strv (CFG_GRP_MANAGER, CFG_KEY_PLUGIN_LIST, (const char**)strv, n);
+    cfg_set_int  (CFG_GRP_MANAGER, CFG_KEY_PLUGIN_LIST_NO, n);
+
+    /* clean up */
+    g_strfreev (strv);
+}
+
+/**
+ * manager_load_modules_in_list:
+ * 
+ * Load the modules in list.
+ *
+ * Since: 2.9.9
+ */
+void
+manager_load_modules_in_list ()
+{
+    gsize n;
+    gchar **strv = cfg_get_strv (CFG_GRP_MANAGER, CFG_KEY_PLUGIN_LIST, &n);
+    if (strv)
+    {
+        peas_engine_set_loaded_plugins (get_engine (), (const gchar**)strv);
+    }
+    g_strfreev (strv);
+}
+
+/**
  * manager_auto_start:
- * @engine: Start the auto-star tmodules in that engine.
  *
  * Just start the auto-start modules.
  *
- * Return Value: 0 on success. The others are on error.
- *
- * Flags: TODO
  */
-int
-manager_auto_start (PeasEngine *engine)
+void
+manager_auto_start ()
 {
-    return 0;
+    manager_load_modules_in_list ();
 }
 
 
@@ -173,7 +233,7 @@ manager_refresh_modules_list ()
  *
  * Call a function in a plugin.
  *
- * Return Value: TRUE on successful call.
+ * Return Value: TRUE on a successful call.
  * Since: 2.9.9
  */
 gboolean
@@ -204,3 +264,4 @@ manager_call_function (const char *pname,
 
     return r;
 }
+

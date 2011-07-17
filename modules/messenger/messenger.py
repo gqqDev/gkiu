@@ -13,6 +13,8 @@ class Messenger (gobject.GObject, Peas.Activatable):
         print ("do nothing");
     def do_deactivate(self):
         print ("do nothing");
+    def show_notify(self, msg, icon):
+        print ("do nothing")
 
 class MessengerConfigurable (gobject.GObject, PeasGtk.Configurable):
     __gtype_name__ = 'MessengerConfigurable'

@@ -1,4 +1,4 @@
 SUBDIRS =	keyring		\
 			imui 		\
-			iMode 		#\
+			iMode 		\
 			messenger

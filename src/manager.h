@@ -24,10 +24,17 @@
 /* Macros */
 #define DEV_MODULES_DIR "../modules"
 
+/* Definations */
+#define CFG_GRP_MANAGER        "Manager"
+#define CFG_KEY_PLUGIN_LIST    "PluginList"
+#define CFG_KEY_PLUGIN_LIST_NO "PluginListNumber"
+
 /* Functions */
-PeasEngine*   get_engine();
-void          manager_init(gboolean);
-GtkWidget *   manager_show_manager_window ();
+PeasEngine*   get_engine                   ();
+void          manager_init                 (gboolean);
+GtkWidget *   manager_show_manager_window  ();
 void          manager_refresh_modules_list ();
+void          manager_save_modules_list    ();
+void          manager_load_modules_in_list ();
 
 #endif /* __MANAGER_H__ */
