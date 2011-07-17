@@ -107,6 +107,12 @@ main (int argc,
     manager_init (development);
     manager_load_modules_in_list ();
 
+    if (manager_call_function("keyring","keyring_delpwd", "test") == FALSE)
+        g_print ("hai shi shi bai le...");
+    else
+        g_print ("pass...\n");
+
+
     if (showmanager)
     {
         /* Show manager window. */

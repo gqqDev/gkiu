@@ -243,7 +243,7 @@ manager_call_function (const char *pname,
 {
     /* new a PeasExtensionSet */
     PeasExtensionSet *set = peas_extension_set_new (get_engine (),
-                                                    GKIU_PLUGIN_TYPE,
+                                                    peas_activatable_get_type(),
                                                     NULL);
     /* get plugin info */
     PeasPluginInfo *pinfo = peas_engine_get_plugin_info (get_engine (),

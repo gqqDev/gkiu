@@ -28,6 +28,7 @@
 
 #include <libpeas/peas.h>
 
+#include "../../src/plugin-object.h"
 #include "keyring.h"
 
 static void peas_activatable_iface_init (PeasActivatableInterface *);
@@ -39,7 +40,50 @@ G_DEFINE_DYNAMIC_TYPE_EXTENDED (GkmodKeyring,
                                 G_IMPLEMENT_INTERFACE_DYNAMIC (PEAS_TYPE_ACTIVATABLE,
                                                                peas_activatable_iface_init))
 
-G_MODULE_EXPORT void
+enum {
+    PROP_0,
+    PROP_OBJECT
+};
+
+static void
+gkmod_keyring_set_property (GObject      *obj,
+                            guint         prop_id,
+                            const GValue *val,
+                            GParamSpec   *pspec)
+{
+    GkmodKeyring *self = GKMOD_KEYRING (obj);
+
+    switch (prop_id)
+    {
+        case PROP_OBJECT:
+            self->object = g_value_dup_object (val);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+            break;
+    }
+}
+
+static void
+gkmod_keyring_get_property (GObject    *obj,
+                            guint       prop_id,
+                            GValue     *value,
+                            GParamSpec *pspec)
+{
+    GkmodKeyring *self = GKMOD_KEYRING (obj);
+
+    switch (prop_id)
+    {
+        case PROP_OBJECT:
+            self->object = g_value_dup_object (value);
+            break;
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (obj, prop_id, pspec);
+            break;
+    }
+}
+
+void
 peas_register_types (PeasObjectModule *module)
 {
     gkmod_keyring_register_type (G_TYPE_MODULE (module));
@@ -49,18 +93,26 @@ peas_register_types (PeasObjectModule *module)
                                                 GKMOD_TYPE_KEYRING);
 }
 
-static void
+void
 gkmod_keyring_class_init (GkmodKeyringClass *klass)
 {
 }
 
-static void
+void
 gkmod_keyring_class_finalize (GkmodKeyringClass *klass)
 {
+    GObject *gobj = G_OBJECT (klass);
+    g_object_finalize (gobj);
 }
 
+void
+gkmod_keyring_dispose (GkmodKeyring *plugin)
+{
+    GObject *gobj = G_OBJECT (plugin);
+    g_object_dispose (gobj);
+}
 
-static void
+void
 gkmod_keyring_init (GkmodKeyring *plugin)
 {
     g_debug (G_STRFUNC);

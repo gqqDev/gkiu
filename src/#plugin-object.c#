@@ -66,11 +66,6 @@ gkiu_plugin_init (GkiuPlugin *self)
     self->priv->engine = get_engine ();
     self->call_plugin  = manager_call_function;
 
-    if (self->call_plugin("keyring","keyring_delpwd", "test") == FALSE)
-        g_print ("hai shi shi bai le...");
-    else
-        g_print ("pass...\n");
-
     /* initialize*/
 }
 

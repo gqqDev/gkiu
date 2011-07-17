@@ -41,6 +41,9 @@ struct _GkiuPlugin
 
     /*< private >*/
     GkiuPluginPrivate *priv;
+
+    /*< public >*/
+    gboolean (*call_plugin)(const char *pname, const char *mname, ...);
 };
 
 struct _GkiuPluginClass

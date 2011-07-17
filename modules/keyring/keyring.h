@@ -37,6 +37,8 @@ typedef struct _GkmodKeyringClass  GkmodKeyringClass;
 /* Based on PeasExtensionBase */
 struct _GkmodKeyring {
     PeasExtensionBase parent_instance;
+
+    GValue *object;
 };
 
 struct _GkmodKeyringClass {

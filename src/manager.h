@@ -36,5 +36,6 @@ GtkWidget *   manager_show_manager_window  ();
 void          manager_refresh_modules_list ();
 void          manager_save_modules_list    ();
 void          manager_load_modules_in_list ();
+gboolean      manager_call_function        (const char*, const char *, ...);
 
 #endif /* __MANAGER_H__ */
