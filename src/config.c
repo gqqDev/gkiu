@@ -29,6 +29,18 @@
 #include "config.h"
 #include "../config.h"
 
+/**
+ * SECTION: config
+ * @Short_description: Configuring System
+ * @Stability: Stable
+ * @Title: The Configuring System
+ * @Include: config.h
+ * 
+ * The configuring system of GKiu.
+ * That provides a set of interfaces to 
+ * control key files.
+ */
+
 static GKeyFile *config = NULL;
 
 /**

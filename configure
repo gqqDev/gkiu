@@ -541,6 +541,66 @@ as_tr_cpp="eval sed 'y%*$as_cr_letters%P$as_cr_LETTERS%;s%[^_$as_cr_alnum]%_%g'"
 # Sed expression to map a string onto a valid variable name.
 as_tr_sh="eval sed 'y%*+%pp%;s%[^_$as_cr_alnum]%_%g'"
 
+as_awk_strverscmp='
+  # Use only awk features that work with 7th edition Unix awk (1978).
+  # My, what an old awk you have, Mr. Solaris!
+  END {
+    while (length(v1) && length(v2)) {
+      # Set d1 to be the next thing to compare from v1, and likewise for d2.
+      # Normally this is a single character, but if v1 and v2 contain digits,
+      # compare them as integers and fractions as strverscmp does.
+      if (v1 ~ /^[0-9]/ && v2 ~ /^[0-9]/) {
+	# Split v1 and v2 into their leading digit string components d1 and d2,
+	# and advance v1 and v2 past the leading digit strings.
+	for (len1 = 1; substr(v1, len1 + 1) ~ /^[0-9]/; len1++) continue
+	for (len2 = 1; substr(v2, len2 + 1) ~ /^[0-9]/; len2++) continue
+	d1 = substr(v1, 1, len1); v1 = substr(v1, len1 + 1)
+	d2 = substr(v2, 1, len2); v2 = substr(v2, len2 + 1)
+	if (d1 ~ /^0/) {
+	  if (d2 ~ /^0/) {
+	    # Compare two fractions.
+	    while (d1 ~ /^0/ && d2 ~ /^0/) {
+	      d1 = substr(d1, 2); len1--
+	      d2 = substr(d2, 2); len2--
+	    }
+	    if (len1 != len2 && ! (len1 && len2 && substr(d1, 1, 1) == substr(d2, 1, 1))) {
+	      # The two components differ in length, and the common prefix
+	      # contains only leading zeros.  Consider the longer to be less.
+	      d1 = -len1
+	      d2 = -len2
+	    } else {
+	      # Otherwise, compare as strings.
+	      d1 = "x" d1
+	      d2 = "x" d2
+	    }
+	  } else {
+	    # A fraction is less than an integer.
+	    exit 1
+	  }
+	} else {
+	  if (d2 ~ /^0/) {
+	    # An integer is greater than a fraction.
+	    exit 2
+	  } else {
+	    # Compare two integers.
+	    d1 += 0
+	    d2 += 0
+	  }
+	}
+      } else {
+	# The normal case, without worrying about digits.
+	d1 = substr(v1, 1, 1); v1 = substr(v1, 2)
+	d2 = substr(v2, 1, 1); v2 = substr(v2, 2)
+      }
+      if (d1 < d2) exit 1
+      if (d1 > d2) exit 2
+    }
+    # Beware Solaris /usr/xgp4/bin/awk (at least through Solaris 10),
+    # which mishandles some comparisons of empty strings to integers.
+    if (length(v2)) exit 1
+    if (length(v1)) exit 2
+  }
+'
 SHELL=${CONFIG_SHELL-/bin/sh}
 
 
@@ -690,6 +750,9 @@ EGREP
 GREP
 CPP
 GETTEXT_PACKAGE
+ENABLE_VALA_FALSE
+ENABLE_VALA_TRUE
+VALAC
 pkgpyexecdir
 pyexecdir
 pkgpythondir
@@ -699,14 +762,6 @@ PYTHON_EXEC_PREFIX
 PYTHON_PREFIX
 PYTHON_VERSION
 PYTHON
-INTROSPECTION_MAKEFILE
-INTROSPECTION_LIBS
-INTROSPECTION_CFLAGS
-INTROSPECTION_TYPELIBDIR
-INTROSPECTION_GIRDIR
-INTROSPECTION_GENERATE
-INTROSPECTION_COMPILER
-INTROSPECTION_SCANNER
 am__fastdepCC_FALSE
 am__fastdepCC_TRUE
 CCDEPMODE
@@ -795,6 +850,7 @@ enable_option_checking
 enable_silent_rules
 enable_maintainer_mode
 enable_dependency_tracking
+enable_vala
 enable_nls
 enable_shared
 enable_static
@@ -1444,6 +1500,7 @@ Optional Features:
 			  (and sometimes confusing) to the casual installer
   --disable-dependency-tracking  speeds up one-time build
   --enable-dependency-tracking   do not reject slow dependency extractors
+  --enable-vala           Enable Vala support
   --disable-nls           do not use Native Language Support
   --enable-shared[=PKGS]  build shared libraries [default=yes]
   --enable-static[=PKGS]  build static libraries [default=yes]
@@ -3787,28 +3844,6 @@ fi
 # pkg-config
 PKG_CONFIG=pkg-config
 
-#
-# Gobject Introspection
-#
-
-INTROSPECTION_SCANNER=`$PKG_CONFIG --variable=g_ir_scanner gobject-introspection-1.0`
-INTROSPECTION_COMPILER=`$PKG_CONFIG --variable=g_ir_compiler gobject-introspection-1.0`
-INTROSPECTION_GENERATE=`$PKG_CONFIG --variable=g_ir_generate gobject-introspection-1.0`
-INTROSPECTION_GIRDIR=`$PKG_CONFIG --variable=girdir gobject-introspection-1.0`
-INTROSPECTION_TYPELIBDIR="$($PKG_CONFIG --variable=typelibdir gobject-introspection-1.0)"
-INTROSPECTION_CFLAGS=`$PKG_CONFIG --cflags gobject-introspection-1.0`
-INTROSPECTION_LIBS=`$PKG_CONFIG --libs gobject-introspection-1.0`
-INTROSPECTION_MAKEFILE=`$PKG_CONFIG --variable=datadir gobject-introspection-1.0`/gobject-introspection-1.0/Makefile.introspection
-
-
-
-
-
-
-
-
-
-
 
 PYTHON_REQUIRED=2.5.2
 
@@ -4037,6 +4072,108 @@ $as_echo "$am_cv_python_pyexecdir" >&6; }
     found_python="yes"
   fi
 
+
+
+
+
+VALA_REQUIRED=0.11.1
+
+# Check whether --enable-vala was given.
+if test "${enable_vala+set}" = set; then :
+  enableval=$enable_vala; enable_vala=$enableval
+else
+  enable_vala=auto
+fi
+
+
+if test "$enable_vala" = "no"; then
+	found_vala="no (disabled, use --enable-vala to enable)"
+else
+	# Extract the first word of "valac", so it can be a program name with args.
+set dummy valac; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_path_VALAC+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  case $VALAC in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_VALAC="$VALAC" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_VALAC="$as_dir/$ac_word$ac_exec_ext"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+  ;;
+esac
+fi
+VALAC=$ac_cv_path_VALAC
+if test -n "$VALAC"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $VALAC" >&5
+$as_echo "$VALAC" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+ if test -z "$VALAC"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: WARNING: No Vala compiler found.  You will not be able to compile .vala source files." >&5
+$as_echo "$as_me: WARNING: No Vala compiler found.  You will not be able to compile .vala source files." >&2;}
+else
+  if test -n "$VALA_REQUIRED"; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: checking $VALAC is at least version $VALA_REQUIRED" >&5
+$as_echo_n "checking $VALAC is at least version $VALA_REQUIRED... " >&6; }
+       am__vala_version=`$VALAC --version | sed 's/Vala  *//'`
+       as_arg_v1=$VALA_REQUIRED
+as_arg_v2="$am__vala_version"
+awk "$as_awk_strverscmp" v1="$as_arg_v1" v2="$as_arg_v2" /dev/null
+case $? in #(
+  1) :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; } ;; #(
+  0) :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; } ;; #(
+  2) :
+    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; } ;; #(
+  *) :
+     ;;
+esac
+fi
+fi
+
+	if test "$VALAC" = ""; then
+		found_vala="no (valac >= $VALA_REQUIRED not found)"
+	else
+		found_vala="yes"
+	fi
+fi
+
+if test "$enable_vala" = "yes" -a "$found_vala" != "yes"; then
+	as_fn_error $? "$found_vala" "$LINENO" 5
+fi
+
+ if test "$found_vala" = "yes"; then
+  ENABLE_VALA_TRUE=
+  ENABLE_VALA_FALSE='#'
+else
+  ENABLE_VALA_TRUE='#'
+  ENABLE_VALA_FALSE=
+fi
 
 
 GETTEXT_PACKAGE=gkiu
@@ -12970,28 +13107,31 @@ if test -n "$GKIU_CFLAGS"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"
 gio-2.0 \\
-gtk+-3.0 \\
+gtk+-3.0 >= 3.0 \\
 libpeas-gtk-1.0 \\
 libpeas-1.0 \\
 libnotify >= 0.7.0 \\
-gnome-keyring-1\""; } >&5
+gnome-keyring-1 \\
+dbus-glib-1\""; } >&5
   ($PKG_CONFIG --exists --print-errors "
 gio-2.0 \
-gtk+-3.0 \
+gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
 libnotify >= 0.7.0 \
-gnome-keyring-1") 2>&5
+gnome-keyring-1 \
+dbus-glib-1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GKIU_CFLAGS=`$PKG_CONFIG --cflags "
 gio-2.0 \
-gtk+-3.0 \
+gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
 libnotify >= 0.7.0 \
-gnome-keyring-1" 2>/dev/null`
+gnome-keyring-1 \
+dbus-glib-1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -13004,28 +13144,31 @@ if test -n "$GKIU_LIBS"; then
     if test -n "$PKG_CONFIG" && \
     { { $as_echo "$as_me:${as_lineno-$LINENO}: \$PKG_CONFIG --exists --print-errors \"
 gio-2.0 \\
-gtk+-3.0 \\
+gtk+-3.0 >= 3.0 \\
 libpeas-gtk-1.0 \\
 libpeas-1.0 \\
 libnotify >= 0.7.0 \\
-gnome-keyring-1\""; } >&5
+gnome-keyring-1 \\
+dbus-glib-1\""; } >&5
   ($PKG_CONFIG --exists --print-errors "
 gio-2.0 \
-gtk+-3.0 \
+gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
 libnotify >= 0.7.0 \
-gnome-keyring-1") 2>&5
+gnome-keyring-1 \
+dbus-glib-1") 2>&5
   ac_status=$?
   $as_echo "$as_me:${as_lineno-$LINENO}: \$? = $ac_status" >&5
   test $ac_status = 0; }; then
   pkg_cv_GKIU_LIBS=`$PKG_CONFIG --libs "
 gio-2.0 \
-gtk+-3.0 \
+gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
 libnotify >= 0.7.0 \
-gnome-keyring-1" 2>/dev/null`
+gnome-keyring-1 \
+dbus-glib-1" 2>/dev/null`
 else
   pkg_failed=yes
 fi
@@ -13047,30 +13190,33 @@ fi
         if test $_pkg_short_errors_supported = yes; then
 	        GKIU_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors "
 gio-2.0 \
-gtk+-3.0 \
+gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
 libnotify >= 0.7.0 \
-gnome-keyring-1" 2>&1`
+gnome-keyring-1 \
+dbus-glib-1" 2>&1`
         else
 	        GKIU_PKG_ERRORS=`$PKG_CONFIG --print-errors "
 gio-2.0 \
-gtk+-3.0 \
+gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
 libnotify >= 0.7.0 \
-gnome-keyring-1" 2>&1`
+gnome-keyring-1 \
+dbus-glib-1" 2>&1`
         fi
 	# Put the nasty error message in config.log where it belongs
 	echo "$GKIU_PKG_ERRORS" >&5
 
 	as_fn_error $? "Package requirements (
 gio-2.0 \
-gtk+-3.0 \
+gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
 libnotify >= 0.7.0 \
-gnome-keyring-1) were not met:
+gnome-keyring-1 \
+dbus-glib-1) were not met:
 
 $GKIU_PKG_ERRORS
 
@@ -13235,6 +13381,10 @@ Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 if test -z "${am__fastdepCC_TRUE}" && test -z "${am__fastdepCC_FALSE}"; then
   as_fn_error $? "conditional \"am__fastdepCC\" was never defined.
+Usually this means the macro was only invoked conditionally." "$LINENO" 5
+fi
+if test -z "${ENABLE_VALA_TRUE}" && test -z "${ENABLE_VALA_FALSE}"; then
+  as_fn_error $? "conditional \"ENABLE_VALA\" was never defined.
 Usually this means the macro was only invoked conditionally." "$LINENO" 5
 fi
 

@@ -25,9 +25,15 @@
 #include <libpeas-gtk/peas-gtk.h>
 
 #include "config.h"
-#include "plugin-object.h"
 #include "main.h"
 #include "manager.h"
+
+/**
+ * SECTION: engine
+ * @Short_description: Manage the Engine
+ * @Title: Manager
+ * @Include: manager.h
+ */
 
 static PeasEngine *engine = NULL;
 
@@ -105,6 +111,7 @@ manager_show_manager_window ()
     GtkWidget *box        = NULL;
     GtkWidget *manager    = NULL;
     GtkWidget *rbutton    = NULL; /* refresh module list */
+    GtkWidget *buttonbox  = NULL; /* add extra buttons to this */
 
     window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
     g_signal_connect (window, "delete-event", 
@@ -135,10 +142,17 @@ manager_show_manager_window ()
     manager = peas_gtk_plugin_manager_new (get_engine ());
     gtk_box_pack_start (GTK_BOX (box), manager, TRUE, TRUE, 0);
 
-    rbutton = gtk_button_new_with_label (_("Refresh"));
+    /* button box */
+    buttonbox = gtk_hbutton_box_new ();
+    gtk_button_box_set_layout (GTK_BUTTON_BOX(buttonbox),
+                               GTK_BUTTONBOX_END);
+    gtk_box_pack_end (GTK_BOX (box), buttonbox, FALSE, FALSE, 0);
+    
+    /* rbutton */
+    rbutton = gtk_button_new_with_mnemonic (_("_Refresh"));
     g_signal_connect (rbutton, "clicked", 
                       G_CALLBACK (manager_refresh_modules_list), NULL);
-    gtk_box_pack_start (GTK_BOX (box), rbutton, TRUE, TRUE, 0);
+    gtk_box_pack_end (GTK_BOX (buttonbox), rbutton, FALSE, FALSE, 0);
 
     gtk_window_resize (GTK_WINDOW(window), 600, 500);
 
@@ -243,7 +257,7 @@ manager_call_function (const char *pname,
 {
     /* new a PeasExtensionSet */
     PeasExtensionSet *set = peas_extension_set_new (get_engine (),
-                                                    peas_activatable_get_type(),
+                                                    PEAS_TYPE_ACTIVATABLE,
                                                     NULL);
     /* get plugin info */
     PeasPluginInfo *pinfo = peas_engine_get_plugin_info (get_engine (),

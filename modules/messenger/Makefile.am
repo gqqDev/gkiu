@@ -1,8 +1,5 @@
-plugindir = $(libdir)/gkiu/modules/imui
+plugindir = $(libdir)/gkiu/modules/messenger
 
-plugin_PYTHON = \
-				messenger.py
-
-plugin_DATA = messenger.plugin
+INCLUDES = $(GKIU_CFLAGS)
 
 EXTRA_DIST = $(plugin_DATA)

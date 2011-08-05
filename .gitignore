@@ -15,3 +15,11 @@
 *.plugin
 Makefile
 Makefile.in
+config.h
+config.log
+config.status
+libtool
+*.gir
+POTFILES
+stamp-it
+stamp-h1

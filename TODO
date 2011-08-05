@@ -1,0 +1,27 @@
+ TODO LIST OF GKIU 
+===================
+
+If you see your wish here, mean you can see that in next release. :-)
+
+[required]   | that work is required by other works.
+[not_needed] | currently not needed but will be done before releasing.
+[done]       | have done. that work will be deleted after releasing.
+[currently]  | currently working on this.
+[testing]    | It's done but needs testing. MUST comes with [currently].
+[bug]        | a bug. that is listed on BUGS.
+[fixing]     | the bug is fixing.
+
+If all the works are done, new version will be released.
+
+====== mike TODO ====== 
+1. Support for calling another module in a module. [required]
+2. Fix #manager_call_function(). [required][bug]
+3. Support for DBUS<1>. [required][currently][testing][fixing]
+4. Export modules to gkiu-modules-im. [not_needed]
+
+<1> Thanks to SuperCat & his RhythmCat (rhythmcat.googlecode.com). 
+    His code is very nice.
+<footnote> footnote
+
+====== ======
+

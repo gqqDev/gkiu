@@ -28,7 +28,6 @@
 
 #include <libpeas/peas.h>
 
-#include "../../src/plugin-object.h"
 #include "keyring.h"
 
 static void peas_activatable_iface_init (PeasActivatableInterface *);

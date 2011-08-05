@@ -15,28 +15,6 @@ AC_PROG_CC
 # pkg-config
 PKG_CONFIG=[pkg-config]
 
-#
-# Gobject Introspection
-#
-AC_CONFIG_MACRO_DIR([m4])
-INTROSPECTION_SCANNER=`$PKG_CONFIG --variable=g_ir_scanner gobject-introspection-1.0`
-INTROSPECTION_COMPILER=`$PKG_CONFIG --variable=g_ir_compiler gobject-introspection-1.0`
-INTROSPECTION_GENERATE=`$PKG_CONFIG --variable=g_ir_generate gobject-introspection-1.0`
-INTROSPECTION_GIRDIR=`$PKG_CONFIG --variable=girdir gobject-introspection-1.0`
-INTROSPECTION_TYPELIBDIR="$($PKG_CONFIG --variable=typelibdir gobject-introspection-1.0)"
-INTROSPECTION_CFLAGS=`$PKG_CONFIG --cflags gobject-introspection-1.0`
-INTROSPECTION_LIBS=`$PKG_CONFIG --libs gobject-introspection-1.0`
-INTROSPECTION_MAKEFILE=`$PKG_CONFIG --variable=datadir gobject-introspection-1.0`/gobject-introspection-1.0/Makefile.introspection
-
-AC_SUBST(INTROSPECTION_SCANNER)
-AC_SUBST(INTROSPECTION_COMPILER)
-AC_SUBST(INTROSPECTION_GENERATE)
-AC_SUBST(INTROSPECTION_GIRDIR)
-AC_SUBST(INTROSPECTION_TYPELIBDIR)
-AC_SUBST(INTROSPECTION_CFLAGS)
-AC_SUBST(INTROSPECTION_LIBS)
-AC_SUBST(INTROSPECTION_MAKEFILE)
-
 dnl ================================================================
 dnl Python
 dnl ================================================================
@@ -44,6 +22,46 @@ dnl ================================================================
 PYTHON_REQUIRED=2.5.2
 
 AM_PATH_PYTHON($PYTHON_REQUIRED, [found_python="yes"],[found_python="no (python interpretor >= ${PYTHON_REQUIRED} not found"])
+
+dnl ================================================================
+dnl Vala
+dnl ================================================================
+AC_DEFUN([CHECK_VALAC],
+[AC_PATH_PROG([VALAC], [valac], [])
+ AS_IF([test -z "$VALAC"],
+   [AC_MSG_WARN([No Vala compiler found.  You will not be able to compile .vala source files.])],
+   [AS_IF([test -n "$1"],
+      [AC_MSG_CHECKING([$VALAC is at least version $1])
+       am__vala_version=`$VALAC --version | sed 's/Vala  *//'`
+       AS_VERSION_COMPARE([$1], ["$am__vala_version"],
+         [AC_MSG_RESULT([yes])],
+         [AC_MSG_RESULT([yes])],
+         [AC_MSG_RESULT([no])])])])
+])
+
+VALA_REQUIRED=0.11.1
+
+AC_ARG_ENABLE([vala],
+	      AS_HELP_STRING([--enable-vala],[Enable Vala support]),
+	      [enable_vala=$enableval],
+	      [enable_vala=auto])
+
+if test "$enable_vala" = "no"; then
+	found_vala="no (disabled, use --enable-vala to enable)"
+else
+	CHECK_VALAC($VALA_REQUIRED)
+	if test "$VALAC" = ""; then
+		found_vala="no (valac >= $VALA_REQUIRED not found)"
+	else
+		found_vala="yes"
+	fi
+fi
+
+if test "$enable_vala" = "yes" -a "$found_vala" != "yes"; then
+	AC_MSG_ERROR([$found_vala])
+fi
+
+AM_CONDITIONAL([ENABLE_VALA],[test "$found_vala" = "yes"])
 
 dnl ***************************************************************************
 dnl Internatinalization
@@ -60,11 +78,12 @@ AM_PROG_LIBTOOL
 
 PKG_CHECK_MODULES(GKIU, [
 gio-2.0 \
-gtk+-3.0 \
+gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
 libnotify >= 0.7.0 \
-gnome-keyring-1])
+gnome-keyring-1 \
+dbus-glib-1])
 
 AC_CONFIG_FILES([
 Makefile

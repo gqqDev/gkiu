@@ -20,6 +20,7 @@
 #define __MANAGER_H__
 
 #include <gtk/gtk.h>
+#include <libpeas/peas.h>
 
 /* Macros */
 #define DEV_MODULES_DIR "../modules"

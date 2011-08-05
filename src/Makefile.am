@@ -1,4 +1,3 @@
-	plugin-object.h	
 ## Process this file with automake to produce Makefile.in
 
 AM_CFLAGS =\
@@ -15,14 +14,17 @@ AM_CFLAGS =\
 bin_PROGRAMS = gkiu
 
 gkiu_SOURCES = \
-	main.c			\
-	main.h			\
-	manager.c		\
-	manager.h		\
-	config.c   		\
-	config.h		\
-	plugin-object.c	\
-	plugin-object.h	
+	main.c					\
+	main.h					\
+	manager.c				\
+	manager.h				\
+	config.c   				\
+	config.h				\
+    dbus.c					\
+    dbus.h					\
+	gkiu-dbus-object.c		\
+	gkiu-dbus-object.h		\
+    gkiu-dbus-object-glue.h
 
 gkiu_LDADD = $(GKIU_LIBS)
 

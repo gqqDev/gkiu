@@ -1,0 +1,59 @@
+2011-07-18  Mike Ma <zhtx10@gmail.com>
+
+	* config.h, config.log, config.status, libtool,
+	modules/keyring/keyring.gir, po/POTFILES, po/stamp-it, stamp-h1: a
+	basic version for calling other plugins
+
+2011-07-18  Mike Ma <zhtx10@gmail.com>
+
+	* config.h, config.log, config.status, libtool,
+	modules/keyring/keyring.c, modules/keyring/keyring.gir,
+	modules/keyring/keyring.h, po/POTFILES, po/stamp-it,
+	src/#plugin-object.c#, src/.#plugin-object.c, src/main.c,
+	src/manager.c, src/manager.h, src/plugin-object.c,
+	src/plugin-object.h, stamp-h1: a basic version for calling other
+	plugins
+
+2011-07-17  Mike Ma <zhtx10@gmail.com>
+
+	* autogen.sh, introspection.m4: gkiu *nightly* 20110717-2: added
+	auto-start; fixed a bug that makes gkiu cannot pass compiling
+
+2011-07-17  Mike Ma <zhtx10@gmail.com>
+
+	* Makefile.am, autom4te.cache/output.1, autom4te.cache/requests,
+	autom4te.cache/traces.1, configure, configure.ac, data/Makefile.am,
+	data/pictures/Makefile.am, m4/Makefile.am, modules/Makefile.am,
+	modules/messenger/Makefile.am, modules/messenger/messenger.py,
+	src/Makefile.am, src/config.c, src/config.h, src/main.c,
+	src/manager.c, src/manager.h: gkiu *nightly* 20110717: added
+	auto-start;
+
+2011-07-10  Mike Ma <zhtx10@gmail.com>
+
+	* autom4te.cache/requests, config.h.in, data/Makefile.am,
+	modules/keyring/Makefile.am, src/Makefile.am, src/manager.c,
+	src/manager.h, src/plugin-object.c, src/plugin-object.h: gkiu
+	*nightly* 20110710: (1)support call plugin in core. (2)added refresh
+	button.
+
+2011-07-07  Mike Ma <zhtx10@gmail.com>
+
+	* config.h, config.log, config.status, libtool,
+	modules/keyring/keyring.gir, po/POTFILES, po/stamp-it, src/app.c,
+	src/app.h, stamp-h1: gkiu *nightly* 20110707: added a new icon.
+	fixed a "cannot find plugins" bug.
+
+2011-07-07  Mike Ma <zhtx10@gmail.com>
+
+	* autom4te.cache/output.1, autom4te.cache/traces.1, config.h,
+	config.log, config.status, configure, configure.ac, libtool,
+	modules/keyring/keyring.gir, po/POTFILES, po/stamp-it,
+	src/Makefile.am, src/main.c, src/main.h, src/manager.c, stamp-h1: 
+	gkiu *nightly* 20110707: added a new icon. fixed a "cannot find
+	plugins" bug.
+
+2011-07-07  Mike Ma <mike@laptop.mike>
+
+	* gkiu 2.9.9
+

@@ -18,9 +18,10 @@
 
 /**
  * SECTION: main
- * @short_description: the main() function.
- * @see_also: the #main() function.
- * @stability: Stable
+ * @Title: The entry point.
+ * @Short_description: the main() function.
+ * @See_also: the #main() function.
+ * @Stability: Stable
  * 
  * This file include the main() function.
  */
@@ -36,20 +37,19 @@
 #include <libpeas/peas.h>
 
 #include "config.h"
+#include "dbus.h"
 #include "main.h"
 #include "manager.h"
 
 gboolean development;
 gboolean showmanager;
 
-
 static GOptionEntry args [] = {
-    { "development", 'd', 0, G_OPTION_ARG_NONE, &development,
-      N_("Run on development."), NULL },
+    { "debug", 'd', 0, G_OPTION_ARG_NONE, &development,
+      N_("Do NOT use this."), NULL },
     { "show-manager", 'm', 0, G_OPTION_ARG_NONE, &showmanager,
       N_("Show the Modules Manager of GKiu Core."), NULL },
 };
-
 
 /**
  * main:
@@ -59,6 +59,7 @@ static GOptionEntry args [] = {
  * This function is the main() function.
  * It does:
  * 1, Init (parse args, i18n, config, gobject)
+ * 2. Init DBus
  * 3, Print application name and version to terminal.
  * 4, Call core manager.
  *
@@ -99,6 +100,9 @@ main (int argc,
     /* Load GIRepository Support */
     g_irepository_prepend_search_path (GIR_DIR);
 
+    /* init dbus */
+    __dbus_init ();
+    
     /* Print Some Informations */
     g_print (_("Welcome to %s\n"), PACKAGE_STRING);
 
@@ -107,20 +111,13 @@ main (int argc,
     manager_init (development);
     manager_load_modules_in_list ();
 
-    if (manager_call_function("keyring","keyring_delpwd", "test") == FALSE)
-        g_print ("hai shi shi bai le...");
-    else
-        g_print ("pass...\n");
-
-
     if (showmanager)
     {
-        /* Show manager window. */
         gtk_widget_show_all (manager_show_manager_window ());
         gtk_main ();
     }
 
-    /* Bye, GKiu. We'll miss you. :-) */
+    /* Good night, GKiu. :-) */
     cfg_save ();
     cfg_free ();
     exit (EXIT_SUCCESS);
