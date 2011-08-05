@@ -74,7 +74,6 @@ gboolean __dbus_init(void)
     }
     else
     {
-        abort ();
         dbus_g_object_type_install_info (GKIU_TYPE_DBUS_OBJECT,
                                          &dbus_glib_gkiu_dbus_object_object_info);
         shell_info = g_object_new (GKIU_TYPE_DBUS_OBJECT, NULL);

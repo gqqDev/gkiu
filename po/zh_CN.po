@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-05 14:22+0800\n"
+"POT-Creation-Date: 2011-08-05 23:04+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,42 +17,60 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/main.c:82
-msgid " - GKiu Core Manager"
-msgstr " - GKiu 8áh"
-
-#: src/main.c:87
+#: src/config.c:63
 #, c-format
-msgid "Error while parsing arguments: %s"
-msgstr "��p%s��"
+msgid "Couldn't make directory to save configurations: %s"
+msgstr "不能为保存配置而创建目录：%s"
+
+#: src/config.c:71
+#, c-format
+msgid "Couldn't create key file: %s"
+msgstr "不能和创建键文件：%s"
+
+#: src/config.c:88
+msgid "Couldn't load configurations file!"
+msgstr "不能加载配置文件！"
+
+#: src/config.c:213
+msgid "Couldn't save configurations."
+msgstr "不能保存配置。"
+
+#: src/dbus.c:59
+#, c-format
+msgid "Failed to open DBus: %s"
+msgstr "打开 DBus 失败：%s"
+
+#: src/dbus.c:70
+#, c-format
+msgid "Couldn't create proxy for DBus shell: %s"
+msgstr "不能为 DBus 外壳创建代理：%s"
+
+#: src/main.c:85
+msgid " - GKiu Core Manager"
+msgstr " - GKiu 核心管理器"
 
 #: src/main.c:94
 #, c-format
+msgid "Error while parsing arguments: %s"
+msgstr "解析参数时发生错误：%s"
+
+#: src/main.c:107
+#, c-format
 msgid "Welcome to %s\n"
-msgstr "欢迎来到%s\n"
+msgstr "欢迎来到 %s\n"
 
-#: src/main.c:99
-msgid "On development."
-msgstr "开发环境。"
-
-#: src/main.c:105
-msgid "Starting Core Manager."
+#: src/main.c:110
+msgid "Staring Core Manager."
 msgstr "正在启动核心管理器。"
 
-#: src/manager.c:56
+#: src/manager.c:67
 msgid "Could not load modules"
-msgstr "无法载入模块"
+msgstr "不能载入模块"
 
-#: src/manager.c:93
+#: src/manager.c:120
 msgid "GKiu Manager"
 msgstr "GKiu 管理器"
 
-#: modules/keyring/keyring.c:40
-#, c-format
-msgid "Couldn't save the password. %s"
-msgstr "无法保存密码。%s"
-
-#: modules/keyring/keyring.c:93
-#, c-format
-msgid "Couldn't delete the password. %s"
-msgstr "无法删除密码。%s"
+#: src/manager.c:152
+msgid "_Refresh"
+msgstr "刷新(_R)"

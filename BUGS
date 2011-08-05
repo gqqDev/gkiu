@@ -4,3 +4,4 @@
 * manager_call_function() doesn't work. [mike]
 * #__dbus_init() doesn't work. [mike]
 * DBus support is not tested. [mike]
+* Couldn't load translations. [??]
