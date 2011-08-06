@@ -23,8 +23,8 @@
 #include <limits.h>
 
 #include "dbus.h"
-#include "gkiu-dbus-object.h"
-#include "gkiu-dbus-object-glue.h"
+#include "shell.h"
+#include "shell-glue.h"
 #include "../config.h"
 
 /**
@@ -37,9 +37,9 @@
  * The functions here are internal. (So I add _ prefix.)
  */
 
-static const char __DBUS_NAME[] = "org.gkiu";
-static const char __DBUS_PATH_SHELL[] = "/org/gkiu/Shell";
-static const char __DBUS_INTERFACE_SHELL[] = "org.gkiu.Shell";
+static const char __DBUS_NAME[] = "org.gkiu.core";
+static const char __DBUS_PATH_SHELL[] = "/org/gkiu/core/Shell";
+static const char __DBUS_INTERFACE_SHELL[] = "org.gkiu.core.Shell";
 
 /**
  * __dbus_init:
@@ -48,40 +48,40 @@ static const char __DBUS_INTERFACE_SHELL[] = "org.gkiu.Shell";
  */
 gboolean __dbus_init(void)
 {
-    DBusGConnection *session_bus = NULL;
-    DBusGProxy      *shell_proxy = NULL;
-    GError          *error       = NULL;
-    GObject         *shell_info  = NULL;
-
-    session_bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
-    if (session_bus == NULL)
+    DBusGConnection *bus;
+    DBusGProxy *bus_proxy;
+    GError *error = NULL;
+    GKiuShell *obj;
+    guint request_name_result;
+    
+    dbus_g_object_type_install_info (GKIU_TYPE_SHELL, 
+                                     &dbus_glib_gkiu_shell_object_info);
+    
+    bus = dbus_g_bus_get (DBUS_BUS_SESSION, &error);
+    if (!bus)
     {
-        g_error (_("Failed to open DBus: %s"), error->message);
+        g_error (_("Couldn't connect to system bus: %s"), error->message);
         g_error_free (error);
         return FALSE;
     }
     
-    shell_proxy = dbus_g_proxy_new_for_name (session_bus,
-                                             __DBUS_NAME,
-                                             __DBUS_PATH_SHELL,
-                                             __DBUS_INTERFACE_SHELL);
-    if (!shell_proxy)
+    bus_proxy = dbus_g_proxy_new_for_name (bus, "org.freedesktop.DBus",
+                                           "/", "org.freedesktop.DBus");
+    
+    if (!dbus_g_proxy_call (bus_proxy, "RequestName", &error,
+                            G_TYPE_STRING, __DBUS_NAME,
+                            G_TYPE_UINT, 0,
+                            G_TYPE_INVALID,
+                            G_TYPE_UINT, &request_name_result,
+                            G_TYPE_INVALID))
     {
-        g_warning (_("Couldn't create proxy for DBus shell: %s"), 
-                   error->message);
+        g_error (_("Failed to acquire %s: %s"), __DBUS_NAME, error->message);
         g_error_free (error);
         return FALSE;
     }
-    else
-    {
-        dbus_g_object_type_install_info (GKIU_TYPE_DBUS_OBJECT,
-                                         &dbus_glib_gkiu_dbus_object_object_info);
-        shell_info = g_object_new (GKIU_TYPE_DBUS_OBJECT, NULL);
-        dbus_g_connection_register_g_object (session_bus,
-                                             __DBUS_PATH_SHELL,
-                                             G_OBJECT (shell_info));
-    }
-    g_object_unref (G_OBJECT (shell_proxy));
     
+    obj = g_object_new (GKIU_TYPE_SHELL, NULL);
+    dbus_g_connection_register_g_object (bus, __DBUS_PATH_SHELL, 
+                                         G_OBJECT (obj));
     return TRUE;
 }

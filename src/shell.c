@@ -15,11 +15,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
+#include <stdlib.h>
 #include <dbus/dbus-glib.h>
+#include <glib/gi18n.h>
 #include "manager.h"
-#include "gkiu-dbus-object.h"
-
+#include "shell.h"
 /**
  * SECTION: gkiu-dbus-object
  * @Short_description: The shell object used in D-Bus communication.
@@ -29,19 +29,19 @@
  * The shell object used in D-Bus communication.
  */
 
-G_DEFINE_TYPE (GKiuDBusObject, gkiu_dbus_object, GKIU_TYPE_DBUS_OBJECT)
+G_DEFINE_TYPE (GKiuShell, gkiu_shell, G_TYPE_OBJECT)
 
 static void 
-gkiu_dbus_object_init (GKiuDBusObject *obj)
+gkiu_shell_init (GKiuShell *obj)
 {
 }
 
 static void
-gkiu_dbus_object_class_init (GKiuDBusObjectClass *klass)
+gkiu_shell_class_init (GKiuShellClass *klass)
 {
 }
 
-gboolean gkiu_dbus_object_call_function (GKiuDBusObject *obj, 
+gboolean gkiu_shell_call_function (GKiuShell *obj, 
                                          const gchar *module,
                                          const gchar *function,
                                          gpointer data1,

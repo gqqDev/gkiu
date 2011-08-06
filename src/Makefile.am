@@ -2,7 +2,7 @@
 
 AM_CFLAGS =\
 	-Wall\
-	-g\
+    -O4\
 	-D PACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-D PACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-D PACKAGE_DATA_DIR=\""$(datadir)/gkiu"\" \
@@ -13,6 +13,7 @@ AM_CFLAGS =\
 
 bin_PROGRAMS = gkiu
 
+
 gkiu_SOURCES = \
 	main.c					\
 	main.h					\
@@ -22,9 +23,9 @@ gkiu_SOURCES = \
 	config.h				\
     dbus.c					\
     dbus.h					\
-	gkiu-dbus-object.c		\
-	gkiu-dbus-object.h		\
-    gkiu-dbus-object-glue.h
+	shell.c		\
+	shell.h		\
+    shell-glue.h
 
 gkiu_LDADD = $(GKIU_LIBS)
 

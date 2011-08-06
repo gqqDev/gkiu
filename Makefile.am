@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
-ACLOCAL_AMFLAGS = -I m4
-SUBDIRS = src modules po data m4
+SUBDIRS = src po data
 
 gkiudocdir = ${prefix}/doc/gkiu
 
@@ -21,8 +20,7 @@ EXTRA_DIST = $(gkiudoc_DATA) \
 DISTCLEANFILES = intltool-extract \
 	intltool-merge \
 	intltool-update \
-	po/.intltool-merge-cache
-
+	po/.intltool-merge-cache \
 
 # Remove doc directory on uninstall
 uninstall-local:

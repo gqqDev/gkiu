@@ -73,13 +73,19 @@ main (int argc,
     GOptionContext *option_context;
     GError *error = NULL;
 
-    /* init cfg */
-    cfg_init ();
-
     /* init i18n */
     bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
+    
+    /* init cfg */
+    cfg_init ();
+
+    /* init gobject */
+    g_type_init ();
+    
+    /* init dbus */
+    __dbus_init ();
 
     /* Parse arguments */
     option_context = g_option_context_new (_(" - GKiu Core Manager"));
@@ -97,12 +103,9 @@ main (int argc,
     }
     g_option_context_free (option_context);
 
-    /* Load GIRepository Support */
-    g_irepository_prepend_search_path (GIR_DIR);
-
-    /* init dbus */
-    __dbus_init ();
-    
+    /* init gobject */
+    g_type_init ();
+        
     /* Print Some Informations */
     g_print (_("Welcome to %s\n"), PACKAGE_STRING);
 

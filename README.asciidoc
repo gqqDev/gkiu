@@ -2,7 +2,8 @@
 Mike Ma <zhtx10@gmail.com>
 
 == Beginning to Use ==
-This package contains GKiu Core, but doesn't have any other useful package. If you'd like something useful please wait some weeks, we'll do them soon.
+This package contains GKiu Core, you can go to gkiu-modules-* repo to
+find useful modules.
 
 == Any Bugs? Or any Suggestions? ==
 Any bugs?

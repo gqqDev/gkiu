@@ -1,3 +1,21 @@
+2011-08-05  Mike Ma <zhtx10@gmail.com>
+
+	* BUGS, po/zh_CN.po, src/dbus.c: gkiu *nightly* 20110805b: removed
+	debugging code; added zh_CN translations.
+
+2011-08-05  Mike Ma <zhtx10@gmail.com>
+
+	* .gitignore, AUTHORS, BUGS, ChangeLog, TODO,
+	autom4te.cache/output.0, autom4te.cache/requests,
+	autom4te.cache/traces.0, configure, configure.ac, m4/Makefile.am,
+	modules/keyring/Makefile.am, modules/keyring/keyring.c,
+	modules/messenger/Makefile.am, src/Makefile.am, src/config.c,
+	src/dbus.c, src/dbus.h, src/gkiu-dbus-object-glue.h,
+	src/gkiu-dbus-object.c, src/gkiu-dbus-object.h,
+	src/gkiu-dbus-object.xml, src/main.c, src/manager.c, src/manager.h: 
+	gkiu *nightly* 20110805: added BUGS & TODO. support DBus. removed
+	gir support for keyring.
+
 2011-07-18  Mike Ma <zhtx10@gmail.com>
 
 	* config.h, config.log, config.status, libtool,

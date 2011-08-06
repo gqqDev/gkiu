@@ -16,34 +16,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GKIU_DBUS_OBJECT_H
-#define GKIU_DBUS_OBJECT_H
+#ifndef SHELL_H
+#define SHELL_H
 
 G_BEGIN_DECLS
 
-typedef struct _GKiuDBusObject GKiuDBusObject;
-typedef struct _GKiuDBusObjectClass GKiuDBusObjectClass;
+typedef struct _GKiuShell GKiuShell;
+typedef struct _GKiuShellClass GKiuShellClass;
 
-struct _GKiuDBusObject
+struct _GKiuShell
 {
     GObject parent;
 };
 
-struct _GKiuDBusObjectClass
+struct _GKiuShellClass
 {
     GObjectClass parent;
 };
 
-#define GKIU_TYPE_DBUS_OBJECT (gkiu_dbus_object_get_type())
+#define GKIU_TYPE_SHELL (gkiu_shell_get_type())
 
-GType    gkiu_dbus_object_get_type      (void);
-gboolean gkiu_dbus_object_call_function (GKiuDBusObject *shell, 
-                                         const gchar *module, 
-                                         const gchar *name, 
-                                         gpointer data1,
-                                         gpointer data2,
-                                         gpointer data3,
-                                         gpointer data4,
-                                         GError **err);
+GType    gkiu_shell_get_type      (void);
+gboolean gkiu_shell_call_function (GKiuShell *shell, 
+                                   const gchar *module, 
+                                   const gchar *name, 
+                                   gpointer data1,
+                                   gpointer data2,
+                                   gpointer data3,
+                                   gpointer data4,
+                                   GError **err);
 
 #endif /* GKIU_DBUS_OBJECT_H */
