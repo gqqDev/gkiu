@@ -56,11 +56,10 @@ get_engine()
  * manager_init:
  * Get ready for loading modules.
  *
- * Return Value: void
  * Since: 2.9.9
  */
 void
-manager_init (gboolean on_dev)
+manager_init ()
 {
     if ((engine = peas_engine_get_default ())==NULL)
     {
@@ -68,17 +67,10 @@ manager_init (gboolean on_dev)
         exit (1);
     }
 
-    if (on_dev)
-    {
-        g_debug ("Now search plug-ins from build directory.");
-        peas_engine_add_search_path (engine, DEV_MODULES_DIR, NULL);
-    }
-    else
-    {
-        peas_engine_add_search_path (engine, 
-                                     PACKAGE_LIB_DIR  "/modules",
-                                     PACKAGE_DATA_DIR "/modules");
-    }
+    peas_engine_add_search_path (engine, 
+                                 PACKAGE_LIB_DIR  "/modules",
+                                 PACKAGE_DATA_DIR "/modules");
+    
     peas_engine_enable_loader (engine, "gjs");
     peas_engine_enable_loader (engine, "seed");
     peas_engine_enable_loader (engine, "python");
@@ -132,9 +124,7 @@ manager_show_manager_window ()
         gtk_window_set_default_icon (image);
 #endif
 
-#if GTK_CHECK_VERSION(2,91,1)
     gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
-#endif
 
     box = gtk_vbox_new (FALSE, 6);
     gtk_container_add (GTK_CONTAINER (window), box);
@@ -213,19 +203,6 @@ manager_load_modules_in_list ()
 }
 
 /**
- * manager_auto_start:
- *
- * Just start the auto-start modules.
- *
- */
-void
-manager_auto_start ()
-{
-    manager_load_modules_in_list ();
-}
-
-
-/**
  * manager_refresh_modules_list:
  * @engine: The engine will refresh.
  *
@@ -255,20 +232,18 @@ manager_call_function (const char *pname,
                        const char *mname,
                        ...)
 {
-    /* new a PeasExtensionSet */
+    /* PeasExtensionSet */
     PeasExtensionSet *set = peas_extension_set_new (get_engine (),
                                                     PEAS_TYPE_ACTIVATABLE,
                                                     NULL);
     /* get plugin info */
     PeasPluginInfo *pinfo = peas_engine_get_plugin_info (get_engine (),
                                                          pname);
-
-    /* get extension object. */
+    
+    /* PeasExtension */
     PeasExtension *ext = peas_extension_set_get_extension (set, pinfo);
     if (!ext)
-    {
         return FALSE;
-    }
 
     /* call it. */
     va_list pvar;

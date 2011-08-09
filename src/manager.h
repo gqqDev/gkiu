@@ -32,7 +32,7 @@
 
 /* Functions */
 PeasEngine*   get_engine                   ();
-void          manager_init                 (gboolean);
+void          manager_init                 ();
 GtkWidget *   manager_show_manager_window  ();
 void          manager_refresh_modules_list ();
 void          manager_save_modules_list    ();

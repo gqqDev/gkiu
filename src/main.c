@@ -41,12 +41,9 @@
 #include "main.h"
 #include "manager.h"
 
-gboolean development;
 gboolean showmanager;
 
 static GOptionEntry args [] = {
-    { "debug", 'd', 0, G_OPTION_ARG_NONE, &development,
-      N_("Do NOT use this."), NULL },
     { "show-manager", 'm', 0, G_OPTION_ARG_NONE, &showmanager,
       N_("Show the Modules Manager of GKiu Core."), NULL },
 };
@@ -102,18 +99,15 @@ main (int argc,
         exit (EXIT_FAILURE);
     }
     g_option_context_free (option_context);
-
-    /* init gobject */
-    g_type_init ();
         
     /* Print Some Informations */
     g_print (_("Welcome to %s\n"), PACKAGE_STRING);
 
     /* Call core manager */
     g_debug (_("Staring Core Manager."));
-    manager_init (development);
+    manager_init ();
     manager_load_modules_in_list ();
-
+        
     if (showmanager)
     {
         gtk_widget_show_all (manager_show_manager_window ());

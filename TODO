@@ -14,14 +14,15 @@ If you see your wish here, mean you can see that in next release. :-)
 If all the works are done, new version will be released.
 
 ====== mike TODO ====== 
-1. Support for calling another module in a module. [required]
-2. Fix #manager_call_function(). [required][bug]
-3. Support for DBUS<1>. [required][currently][testing]
-4. Export modules to gkiu-modules-im. [currently][done]
+1. Support for calling another module in a module.
+2. Fix #manager_call_function(). [required][currently][bug]
+3. Support for DBUS<1>. [done]
+4. Export modules to gkiu-modules-im. [done]
 
 <1> Thanks to SuperCat & his RhythmCat (rhythmcat.googlecode.com). 
     His code is very nice.
-<footnote> footnote
 
-====== ======
+====== ?? TODO ======
+1. Find a (free) icon for GKiu. [not_needed]
+
 

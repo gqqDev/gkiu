@@ -65,7 +65,7 @@ cfg_init (void)
     }
 
     /* test key file & create */
-    int fd = open (CFG_KEY_FILE, O_RDWR|O_CREAT);
+    int fd = open (CFG_KEY_FILE, O_RDWR | O_CREAT);
     if (!fd)
     {
         g_error (_("Couldn't create key file: %s"), strerror (errno));
@@ -83,7 +83,8 @@ cfg_init (void)
     /* open key file */
     config = g_key_file_new ();
     GError *err = NULL;
-    if (!g_key_file_load_from_file (config, CFG_KEY_FILE, G_KEY_FILE_NONE, &err))
+    if (!g_key_file_load_from_file (config, CFG_KEY_FILE, 
+                                    G_KEY_FILE_NONE, &err))
     {
         g_error (_("Couldn't load configurations file!"));
         exit (EXIT_FAILURE);
@@ -129,9 +130,9 @@ cfg_get_int (const char *group,
 {
     if (cfg_check (group, key) != CFG_OK)
         return FALSE;
-
+    
     *pint = g_key_file_get_integer (config, group, key, NULL);
-
+    
     return TRUE;
 }
 

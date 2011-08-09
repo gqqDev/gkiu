@@ -1,14 +1,8 @@
 = GKiu README =
 Mike Ma <zhtx10@gmail.com>
 
-== Beginning to Use ==
-This package contains GKiu Core, you can go to gkiu-modules-* repo to
-find useful modules.
+New Version is Waiting for releasing...
 
-== Any Bugs? Or any Suggestions? ==
-Any bugs?
-Any suggestions？
-Please report into http:github.com/gqqdev/gkiu/issues[issues list].
-We, the developers need them very much!
+For what we need to do please refer to file TODO.
 
-And, My English is very poor, please report where the wrong is.
+For what bugs we need to fix please refer to file BUGS.
