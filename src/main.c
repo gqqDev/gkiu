@@ -36,16 +36,23 @@
 #include <gtk/gtk.h>
 #include <libpeas/peas.h>
 
+#include "about.h"
 #include "config.h"
 #include "dbus.h"
 #include "main.h"
 #include "manager.h"
 
 gboolean showmanager;
+gboolean about;
 
 static GOptionEntry args [] = {
     { "show-manager", 'm', 0, G_OPTION_ARG_NONE, &showmanager,
-      N_("Show the Modules Manager of GKiu Core."), NULL },
+            N_("Show the Modules Manager of GKiu Core."), NULL 
+    },
+    { "about", 'a', 0, G_OPTION_ARG_NONE, &about,
+            N_("Show the About dialog."), NULL 
+    },
+    { NULL }
 };
 
 /**
@@ -57,8 +64,7 @@ static GOptionEntry args [] = {
  * It does:
  * 1, Init (parse args, i18n, config, gobject)
  * 2. Init DBus
- * 3, Print application name and version to terminal.
- * 4, Call core manager.
+ * 3, Call core manager.
  *
  * Return Value: The exitcode.
  * Since: 0.0
@@ -67,13 +73,11 @@ int
 main (int argc,
       char *argv[])
 {
-    GOptionContext *option_context;
-    GError *error = NULL;
-
     /* init i18n */
     bindtextdomain (GETTEXT_PACKAGE, PACKAGE_LOCALE_DIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
+    
     
     /* init cfg */
     cfg_init ();
@@ -85,12 +89,17 @@ main (int argc,
     __dbus_init ();
 
     /* Parse arguments */
+    GOptionContext *option_context;
+    GError *error = NULL;
+
     option_context = g_option_context_new (_(" - GKiu Core Manager"));
 
     g_option_context_add_main_entries (option_context, args, PACKAGE_NAME);
-    g_option_context_add_group (option_context, gtk_get_option_group (TRUE));
+    g_option_context_add_group (option_context, 
+                                gtk_get_option_group (TRUE));
 
-    g_option_context_add_group (option_context, g_irepository_get_option_group ());
+    g_option_context_add_group (option_context, 
+                                g_irepository_get_option_group ());
 
     if (!g_option_context_parse (option_context, &argc, &argv, &error))
     {
@@ -100,14 +109,17 @@ main (int argc,
     }
     g_option_context_free (option_context);
         
-    /* Print Some Informations */
-    g_print (_("Welcome to %s\n"), PACKAGE_STRING);
-
+    /* check if about dialog will be shown */
+    if (about)
+    {
+        about_show_dialog ();
+        exit (EXIT_SUCCESS);
+    }
+    
     /* Call core manager */
-    g_debug (_("Staring Core Manager."));
     manager_init ();
     manager_load_modules_in_list ();
-        
+    
     if (showmanager)
     {
         gtk_widget_show_all (manager_show_manager_window ());

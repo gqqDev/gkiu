@@ -25,7 +25,11 @@ gkiu_SOURCES = \
     dbus.h					\
 	shell.c		\
 	shell.h		\
-    shell-glue.h
+    shell-glue.h \
+    about.c \
+    about.h \
+    misc.c \
+    misc.h
 
 gkiu_LDADD = $(GKIU_LIBS)
 

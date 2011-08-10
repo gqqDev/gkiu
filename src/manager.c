@@ -26,6 +26,7 @@
 
 #include "config.h"
 #include "main.h"
+#include "misc.h"
 #include "manager.h"
 
 /**
@@ -112,18 +113,14 @@ manager_show_manager_window ()
     gtk_window_set_title (GTK_WINDOW (window), _("GKiu Manager"));
     gtk_window_set_position (GTK_WINDOW (window), GTK_WIN_POS_CENTER);
 
-#ifdef WHERE_ICON
-    GError *err = NULL; /* Must be NULL! */
-    GdkPixbuf *image = gdk_pixbuf_new_from_file (WHERE_ICON, &err);
-    if (!image)
+    /* set icon */
+    GdkPixbuf *image = misc_open_image (WHERE_ICON);
+    if (image)
     {
-        fprintf (stderr, "%s\n", err->message);
-        g_error_free (err);
-    }
-    else
         gtk_window_set_default_icon (image);
-#endif
-
+        g_object_unref (image);
+    }
+    
     gtk_window_set_has_resize_grip (GTK_WINDOW (window), FALSE);
 
     box = gtk_vbox_new (FALSE, 6);

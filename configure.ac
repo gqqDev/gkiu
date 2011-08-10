@@ -30,6 +30,7 @@ AM_PROG_LIBTOOL
 
 PKG_CHECK_MODULES(GKIU, [
 gio-2.0 \
+glib-2.0 >= 2.8 \
 gtk+-3.0 >= 3.0 \
 libpeas-gtk-1.0 \
 libpeas-1.0 \
